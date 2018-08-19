@@ -10,6 +10,26 @@ App({
     wx.login({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
+        if (res.code) {
+          //发起网络请求
+          wx.request({
+            url:'https://design.zhengsj.top/api/user/login/',
+            method:"POST",
+            data: {
+              code: res.code
+            }, 
+            header: {
+              "Content-Type": "application/json"
+            },
+            success: function (res) {
+              console.log('token=' + res.data.token)
+              that.globalData.token = res.data.token
+              that.globalData.uid = res.data.uid;
+            }
+          })
+        } else {
+          console.log('登录失败！' + res.errMsg)
+        }
       }
     })
     // 获取用户信息
